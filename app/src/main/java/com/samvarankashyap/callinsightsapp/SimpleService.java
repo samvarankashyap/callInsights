@@ -2,8 +2,10 @@ package com.samvarankashyap.callinsightsapp;
 
 import android.app.Service;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Handler;
 import android.os.IBinder;
+import android.provider.CallLog;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -68,8 +70,10 @@ public class SimpleService extends Service {
                 @Override
                 public void run() {
                     // display toast
-                    Toast.makeText(getApplicationContext(), getDateTime(),
-                            Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(), getDateTime(),
+                    //        Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), getCallDetails(),
+                                    Toast.LENGTH_LONG).show();
                 }
 
             });
@@ -79,6 +83,45 @@ public class SimpleService extends Service {
             // get date time in custom format
             SimpleDateFormat sdf = new SimpleDateFormat("[yyyy/MM/dd - HH:mm:ss]");
             return sdf.format(new Date());
+        }
+
+        private String getCallDetails() {
+            StringBuffer sb = new StringBuffer();
+            String strOrder = android.provider.CallLog.Calls.DATE + " DESC";
+
+            Cursor managedCursor = getContentResolver().query(CallLog.Calls.CONTENT_URI,null, null, null,strOrder);
+
+            int number = managedCursor.getColumnIndex(CallLog.Calls.NUMBER);
+            int type = managedCursor.getColumnIndex(CallLog.Calls.TYPE);
+            int date = managedCursor.getColumnIndex(CallLog.Calls.DATE);
+            int duration = managedCursor.getColumnIndex(CallLog.Calls.DURATION);
+            sb.append("Call Log :");
+            managedCursor.moveToNext();
+                String phNum = managedCursor.getString(number);
+                String callTypeCode = managedCursor.getString(type);
+                String strcallDate = managedCursor.getString(date);
+                java.sql.Date callDate = new java.sql.Date(Long.valueOf(strcallDate));
+                String callDuration = managedCursor.getString(duration);
+                String callType = null;
+                int callcode = Integer.parseInt(callTypeCode);
+                switch (callcode) {
+                    case CallLog.Calls.OUTGOING_TYPE:
+                        callType = "Outgoing";
+                        break;
+                    case CallLog.Calls.INCOMING_TYPE:
+                        callType = "Incoming";
+                        break;
+                    case CallLog.Calls.MISSED_TYPE:
+                        callType = "Missed";
+                        break;
+                }
+                sb.append("\nPhone Number:--- " + phNum + " \nCall Type:--- "
+                        + callType + " \nCall Date:--- " + callDate
+                        + " \nCall duration in sec :--- " + callDuration);
+                sb.append("\n----------------------------------");
+
+            managedCursor.close();
+            return sb.toString();
         }
 
     }
