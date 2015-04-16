@@ -1,5 +1,4 @@
 package com.samvarankashyap.callinsightsapp;
-
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -14,16 +13,12 @@ import android.database.sqlite.SQLiteOpenHelper;
 /**
  * Created by samvarankashyap on 4/14/2015.
  */
-
 public class DbManager extends SQLiteOpenHelper {
-
     // All Static variables
     // Database Version
     private static final int DATABASE_VERSION = 1;
-
-    // Database Name
+ // Database Name
     private static final String DATABASE_NAME = "CallInsights";
-
     // Contacts table name
     private static final String TABLE_CALL_LOGS = "calllogs";
 
@@ -43,10 +38,7 @@ public class DbManager extends SQLiteOpenHelper {
     // Creating Tables
     @Override
     public void onCreate(SQLiteDatabase db) {
-        //String CREATE_CONTACTS_TABLE = "CREATE TABLE " + TABLE_CONTACTS + "("
-        //        + KEY_ID + " INTEGER PRIMARY KEY," + KEY_NAME + " TEXT,"
-        //        + KEY_PH_NO + " TEXT" + ")";
-        //db.execSQL(CREATE_CONTACTS_TABLE);
+
         String CREATE_CALL_LOGS = "CREATE TABLE "+ TABLE_CALL_LOGS + "("
                 +KEY_ID + " INTEGER PRIMARY KEY ,"
                 +KEY_CALLER_ID+" TEXT,"
@@ -61,7 +53,6 @@ public class DbManager extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Drop older table if existed
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_CALL_LOGS);
-
         // Create tables again
         onCreate(db);
     }
@@ -106,6 +97,4 @@ public class DbManager extends SQLiteOpenHelper {
         // return contact list
         return callRecordList;
     }
-
-
 }
